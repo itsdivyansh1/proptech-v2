@@ -24,6 +24,7 @@ import AddPost from "./pages/AddPost";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import OtpVerify from "./components/OtpVerify";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,11 @@ const router = createBrowserRouter([
         <OtpVerify />
       </PublicRoute>
     ),
+  },
+
+  {
+    path: "/admin",
+    element: <AdminDashboard />,
   },
 ]);
 
