@@ -77,10 +77,10 @@ function AboutPage() {
                 alt="Jane Smith"
                 className="w-24 h-24 mx-auto rounded-full"
               />
-              <CardTitle className="mt-4">Krish Patil</CardTitle>
+              <CardTitle className="mt-4">Divyansh Mishra</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Roll no. 26</p>
+              <p className="text-muted-foreground">Roll no. 09</p>
             </CardContent>
           </Card>
         </div>

@@ -12,7 +12,7 @@ const userRoute = require("./routes/userRoutes");
 const postRoute = require("./routes/postRoutes");
 const chatRoute = require("./routes/chatRoutes");
 const messageRoute = require("./routes/messageRoutes");
-const chatModel = require("./models/chat");
+const adminRoute=require("./routes/adminRoutes")
 
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -41,6 +41,9 @@ app.use("/api/user", userRoute);
 app.use("/api/post", postRoute);
 app.use("/api/chat", chatRoute);
 app.use("/api/message", messageRoute);
+app.use("/api/admin",adminRoute)
+
+
 
 app.get("/", (req, res) => {
   res.send("server running");

@@ -25,7 +25,7 @@ const ChatPage = () => {
   const socketRef = useRef();
   const scrollRef = useRef(null);
 
-  // Socket connection setup (same as before)
+  
   useEffect(() => {
     const newSocket = io("http://localhost:3100", {
       transports: ["websocket"],
@@ -50,7 +50,7 @@ const ChatPage = () => {
     };
   }, []);
 
-  // Socket event handlers (same as before)
+
   useEffect(() => {
     if (!socket || !currentUser?._id) return;
 
@@ -77,7 +77,7 @@ const ChatPage = () => {
     };
   }, [socket, currentUser, id]);
 
-  // Auto-scroll to bottom when new messages arrive
+ 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
@@ -137,8 +137,8 @@ const ChatPage = () => {
   }, [id]);
 
   return (
-    <div className="flex min-h-screen bg-background p-4">
-      <Card className="w-full max-w-4xl mx-auto">
+    <div className="flex min-h-screen bg-background p-4 bg-red-400">
+      <Card className="w-full max-w-4xl mx-auto h-full ">
         <CardHeader className="p-4 border-b">
           <div className="flex items-center space-x-4">
             <Avatar className="h-12 w-12">
@@ -163,7 +163,7 @@ const ChatPage = () => {
         </CardHeader>
 
         <CardContent className="p-0">
-          <ScrollArea className="h-[600px] p-4">
+          <ScrollArea className="h-[350px] p-4">
             {chat?.messages?.length > 0 ? (
               chat.messages.map((message, index) => (
                 <div
@@ -198,7 +198,7 @@ const ChatPage = () => {
 
           <form
             onSubmit={handleSendMessage}
-            className="border-t p-4 flex gap-4"
+            className="border-t p-4 flex gap-4 mb-0"
           >
             <Input
               value={newMessage}
