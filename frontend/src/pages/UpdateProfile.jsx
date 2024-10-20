@@ -82,13 +82,16 @@ function UpdateProfile() {
 
       if (response.data) {
         // Update Redux store with the new user data
-        dispatch(
-          setUser({
-            ...currentUser,
-            username: formData.username,
-            avatar: avatar,
-          })
-        );
+        const updatedUser = {
+          ...currentUser,
+          username: formData.username,
+          avatar: avatar,
+        };
+
+        dispatch(setUser(updatedUser));
+
+        // Update localStorage with new user data
+        localStorage.setItem("user", JSON.stringify(updatedUser));
 
         // Show success message
         toast({
