@@ -120,20 +120,23 @@ function UpdateProfile() {
                   </p>
                   <div className="flex flex-col gap-2 items-center justify-center">
                     <div className=" w-20 h-20 mb-0">
-                      <img
-                        src={
-                          avatar ? (
-                            avatar
-                          ) : (
-                            <Avatar>
-                              <AvatarImage></AvatarImage>
-                              <AvatarFallback>IM</AvatarFallback>
-                            </Avatar>
-                          )
-                        }
-                        alt="User Avatar"
-                        className="rounded-full object-cover w-full h-full"
-                      />
+                      {avatar ? (
+                        <Avatar>
+                          <AvatarImage
+                            src={avatar}
+                            alt={currentUser.username}
+                          />
+                          <AvatarFallback>
+                            {currentUser.username.substring(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      ) : (
+                        <Avatar>
+                          <AvatarFallback>
+                            {currentUser.username.substring(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
                     </div>
 
                     <UploadProfileImage
