@@ -35,7 +35,7 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Enter valid email address",
   }),
-  password: z.string().min(6, {
+  password: z.string().min(3, {
     message: "Password should contain min 6 characters",
   }),
 });

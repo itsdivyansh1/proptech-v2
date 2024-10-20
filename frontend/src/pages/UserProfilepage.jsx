@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PropertyList from "../components/PropertyList";
 import { useSelector, useDispatch } from "react-redux";
-import { clearUser, setUser } from "../redux/userSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { clearUser } from "../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import {
   Card,
@@ -16,21 +16,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Delete,
-  DeleteIcon,
-  Edit,
-  LogOut,
-  PlusCircle,
-  Trash,
-} from "lucide-react";
+import { Edit, LogOut, PlusCircle } from "lucide-react";
 import Chats from "@/components/Chats";
 import { useToast } from "@/hooks/use-toast";
 
 function UserProfilePage() {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [posts, setPosts] = useState([]);
   const [savedPosts, setSavedPosts] = useState([]);
@@ -38,15 +31,18 @@ function UserProfilePage() {
   const dispatch = useDispatch();
 
   const currentUser = useSelector((state) => state.user.currentUser);
+
   const getPosts = async () => {
     try {
       const response = await axios.get("/user/profileposts");
-      setLoading(true);
       if (response) {
-        setLoading(false);
         setPosts(response.data.userPosts.posts);
-        setSavedPosts(response.data.userPosts.savedPosts);
-        console.log("saved post le", savedPosts);
+        // Extract saved posts from the response
+        const savedPostItems = response.data.userPosts.savedPosts.map(
+          (item) => item.postId
+        );
+        setSavedPosts(savedPostItems);
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -59,7 +55,6 @@ function UserProfilePage() {
     try {
       const response = await axios.get("/chat/getchats");
       if (response.data) {
-        console.log("chats aaye hain:", response.data.chats);
         setChats(response.data.chats);
       }
     } catch (error) {
@@ -73,18 +68,13 @@ function UserProfilePage() {
   }, []);
 
   const handleLogout = () => {
-    setLoading(true); // Set loading to true
-
+    setLoading(true);
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
 
     setTimeout(() => {
-      // Dispatch the removeUser action or clear local storage
-      dispatch(clearUser()); // Make sure you have this action defined
-      localStorage.removeItem("authToken"); // Remove the token if applicable
-      setLoading(false); // Set loading to false after logout
-
-      // Navigate to the login page
+      dispatch(clearUser());
+      setLoading(false);
       navigate("/");
       toast({
         variant: "destructive",
@@ -97,38 +87,31 @@ function UserProfilePage() {
   return currentUser ? (
     <div className="container max-w-[1300px] mx-auto p-2 h-screen">
       <div className="grid md:grid-cols-4 h-[calc(100vh-2rem)] gap-2">
-        {/* Left Column - Profile and Cards Section */}
+        {/* Left Column - Profile and Chats Section */}
         <div className="col-span-2 grid grid-rows-[200px,1fr] gap-2">
-          {/* Profile Card with fixed height */}
+          {/* Profile Card */}
           <Card className="flex flex-col">
             <CardHeader className="flex-none">
               <div className="flex items-center gap-4">
-                {currentUser.avatar ? (
-                  <Avatar className="w-20 h-20">
+                <Avatar className="w-20 h-20">
+                  {currentUser.avatar ? (
                     <AvatarImage
                       src={currentUser.avatar}
                       alt={currentUser.username}
                     />
+                  ) : (
                     <AvatarFallback>
                       {currentUser.username.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
-                  </Avatar>
-                ) : (
-                  <Avatar>
-                    <AvatarFallback>
-                      {currentUser.username.substring(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                )}
+                  )}
+                </Avatar>
                 <div>
                   <CardTitle>{currentUser.username}</CardTitle>
                   <CardDescription>{currentUser.email}</CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="flex-1">
-              {/* Add any additional profile content here */}
-            </CardContent>
+            <CardContent className="flex-1" />
             <CardFooter className="flex-none grid grid-cols-2 gap-2">
               <Button
                 className="bg-green-600 hover:bg-green-600/80"
@@ -142,16 +125,50 @@ function UserProfilePage() {
                 onClick={handleLogout}
                 disabled={loading}
               >
-                <LogOut />
+                <LogOut className="mr-2 h-4 w-4" />
                 {loading ? "Logging out..." : "Log out"}
               </Button>
             </CardFooter>
           </Card>
 
-          {/* Cards Section */}
+          {/* Chats Section */}
           <div className="flex flex-col">
             {chats.length > 0 ? <Chats chats={chats} /> : <h3>No Messages</h3>}
           </div>
+          {/* Saved Posts Column */}
+          <Card className=" flex flex-col">
+            <CardHeader className="flex-none">
+              <CardTitle>Saved Posts</CardTitle>
+            </CardHeader>
+
+            <CardContent className="flex-1">
+              <ScrollArea className="h-[calc(100vh-160px)]">
+                {loading ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((n) => (
+                      <div key={n} className="space-y-3">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-4 w-1/2" />
+                        <Skeleton className="h-4 w-1/4" />
+                      </div>
+                    ))}
+                  </div>
+                ) : savedPosts.length === 0 ? (
+                  <Card variant="secondary">
+                    <CardContent className="flex items-center justify-center min-h-[100px]">
+                      <CardDescription>
+                        No saved posts yet. Save some posts to see them here!
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="space-y-4">
+                    <PropertyList posts={savedPosts} />
+                  </div>
+                )}
+              </ScrollArea>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Right Column - Posts */}
