@@ -5,7 +5,11 @@ import UserProfilepage from "./pages/UserProfilepage";
 import UpdateProfile from "./pages/UpdateProfile";
 import Layout from "./components/Layout"; // Import the layout
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 import PublicRoute from "./components/PublicRoute";
 import { useDispatch } from "react-redux";
 import { setUser } from "./redux/userSlice";

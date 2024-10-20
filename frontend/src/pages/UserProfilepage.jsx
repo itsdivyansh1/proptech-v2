@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropertyList from "../components/PropertyList";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser } from "../redux/userSlice";
+import { clearUser, setUser } from "../redux/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import {
@@ -16,16 +16,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Delete, DeleteIcon, Edit, PlusCircle, Trash } from "lucide-react";
+import {
+  Delete,
+  DeleteIcon,
+  Edit,
+  LogOut,
+  PlusCircle,
+  Trash,
+} from "lucide-react";
 import Chats from "@/components/Chats";
+import { useToast } from "@/hooks/use-toast";
 
 function UserProfilePage() {
+  const { toast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState();
   const [error, setError] = useState(false);
   const [posts, setPosts] = useState([]);
   const [savedPosts, setSavedPosts] = useState([]);
   const [chats, setChats] = useState([]);
+  const dispatch = useDispatch();
 
   const currentUser = useSelector((state) => state.user.currentUser);
   const getPosts = async () => {
@@ -62,29 +72,26 @@ function UserProfilePage() {
     getChats();
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      // First try to logout from backend
-      await axios.get("https://localhost:3001/api/auth/logout"); // Changed back to GET since that's what your backend expects
+  const handleLogout = () => {
+    setLoading(true); // Set loading to true
 
-      // Even if backend fails, clear frontend state
-      dispatch(setUser(null));
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
 
-      // Clear any local storage items
-      localStorage.clear();
+    setTimeout(() => {
+      // Dispatch the removeUser action or clear local storage
+      dispatch(clearUser()); // Make sure you have this action defined
+      localStorage.removeItem("authToken"); // Remove the token if applicable
+      setLoading(false); // Set loading to false after logout
 
-      // Reset axios default headers
-      delete axios.defaults.headers.common["Authorization"];
-
-      // Navigate to login
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Still logout on frontend even if backend fails
-      dispatch(setUser(null));
-      localStorage.clear();
-      navigate("/login");
-    }
+      // Navigate to the login page
+      navigate("/");
+      toast({
+        variant: "destructive",
+        title: "Logged out",
+        description: "You have successfully logged out.",
+      });
+    }, 1000);
   };
 
   return currentUser ? (
@@ -130,9 +137,13 @@ function UserProfilePage() {
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
               </Button>
-              <Button className="bg-red-600 hover:bg-red-600/80">
-                <Trash className="mr-2 h-4 w-4" />
-                Delete
+              <Button
+                className="bg-red-600 hover:bg-red-600/80"
+                onClick={handleLogout}
+                disabled={loading}
+              >
+                <LogOut />
+                {loading ? "Logging out..." : "Log out"}
               </Button>
             </CardFooter>
           </Card>
