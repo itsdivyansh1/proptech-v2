@@ -120,7 +120,7 @@ export default function PropertyDetailPage() {
       if (res.data) {
         toast({
           varaint: "destructive",
-          message: res.data.message,
+          message: "Post Delete Successfully",
         });
         navigate(`/profile/${property.userId}`);
       }
