@@ -25,6 +25,7 @@ import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import OtpVerify from "./components/OtpVerify";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLogin from "./pages/admin/AdminLogin";
 
 const router = createBrowserRouter([
   {
@@ -74,7 +75,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Routes without layout (no navbar)
+ 
   {
     path: "/login",
     element: (
@@ -101,8 +102,12 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/admin",
+    path: "/admin/:id",
     element: <AdminDashboard />,
+  },
+  {
+    path: "/admin/login",
+    element: <AdminLogin />,
   },
 ]);
 

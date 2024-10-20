@@ -254,8 +254,8 @@ export default function PropertyDetailPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Amenities</h3>
-                  <ScrollArea className="h-[200px]">
+                  <h3 className="text-lg font-semibold mb-0">Amenities</h3>
+                  <ScrollArea className="h-[100px]">
                     {property.postDetail.amenities.map((amenity, index) => (
                       <div
                         key={index}

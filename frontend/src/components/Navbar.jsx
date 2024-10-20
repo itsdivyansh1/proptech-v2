@@ -64,12 +64,12 @@ function Navbar() {
     localStorage.removeItem("user");
 
     setTimeout(() => {
-      // Dispatch the removeUser action or clear local storage
-      dispatch(clearUser()); // Make sure you have this action defined
-      localStorage.removeItem("authToken"); // Remove the token if applicable
-      setLoading(false); // Set loading to false after logout
+      
+      dispatch(clearUser());
+      localStorage.removeItem("authToken"); 
+      setLoading(false); 
 
-      // Navigate to the login page
+     
       navigate("/login");
     }, 1000);
 
@@ -81,7 +81,7 @@ function Navbar() {
   };
 
   return (
-    <div className="border-b shadow-sm">
+    <div className="border-b shadow-sm sticky top-0 z-50 bg-gray-100">
       <div className="container flex justify-between items-center max-w-[1300px] mx-auto px-2 py-2 md:py-0">
         <div className="flex items-center ">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -111,7 +111,7 @@ function Navbar() {
           {/* logo */}
           <Link
             to={"/"}
-            className="hover:text-blue-600 transition-colors cursor-pointer gap-2 hidden md:inline-flex items-center p-4 "
+            className="hover:text-blue-600 transition-colors cursor-pointer gap-2 inline-flex items-center p-4"
           >
             <HomeIcon />
             <span className="font-semibold text-xl">Proptech</span>

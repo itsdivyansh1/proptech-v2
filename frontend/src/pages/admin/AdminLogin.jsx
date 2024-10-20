@@ -39,13 +39,14 @@ const formSchema = z.object({
   }),
 });
 
-function Login() {
+function AdminLogin() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.currentUser);
 
   const [loading, setLoading] = useState(false);
+
+
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -60,7 +61,7 @@ function Login() {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:3100/api/auth/login",
+        "http://localhost:3100/api/admin/login",
         formData,
         {
           withCredentials: true, 
@@ -70,15 +71,14 @@ function Login() {
         }
       );
 
-      if (response.data.verified) {
-        localStorage.setItem("authToken", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        dispatch(setUser(response.data.user));
+      if (response.data.token) {
+        localStorage.setItem("adminauthToken", response.data.token);
+        localStorage.setItem("admin", JSON.stringify(response.data.admin));
         toast({
           title: "Login successful",
           description: "Welcome back!",
         });
-        navigate("/");
+        navigate(`/admin/${response.data.admin.id}`);
       } else {
         console.log("Invalid");
         toast({
@@ -99,12 +99,8 @@ function Login() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-   
-    if (user || localStorage.getItem("authToken")) {
-      navigate("/"); 
-    }
-  }, [user, navigate]);
+
+
 
   return (
     <>
@@ -118,7 +114,7 @@ function Login() {
         </Link>
       </div>
       <div className="container relative h-screen flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-        <Link
+        {/* <Link
           to="/signup"
           className={cn(
             buttonVariants({ variant: "ghost" }),
@@ -126,7 +122,7 @@ function Login() {
           )}
         >
           Signup
-        </Link>
+        </Link> */}
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
           <div className="absolute inset-0 bg-zinc-900" />
           <Link
@@ -142,7 +138,7 @@ function Login() {
           <Card className="w-full max-w-[400px] md:0 border-none shadow-none">
             <Form {...form}>
               <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardTitle className="text-2xl">Admin Login</CardTitle>
                 <CardDescription>
                   Enter your email & password below to login
                 </CardDescription>
@@ -191,7 +187,7 @@ function Login() {
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Logging in..." : "Login"}
                   </Button>
-                  <span>
+                  {/* <span>
                     Don't have an account?{" "}
                     <Link
                       to={"/signup"}
@@ -199,7 +195,7 @@ function Login() {
                     >
                       Signup
                     </Link>
-                  </span>
+                  </span> */}
                 </CardFooter>
               </form>
             </Form>
@@ -210,4 +206,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default AdminLogin;
