@@ -103,7 +103,7 @@ function UpdateProfile() {
             { withCredentials: true }
           );
           if (refreshResponse.data) {
-            dispatch(setCurrentUser(refreshResponse.data));
+            dispatch(setUser(refreshResponse.data));
           }
         } catch (error) {
           console.error("Error refreshing user data:", error);
